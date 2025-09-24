@@ -1,0 +1,84 @@
+Here you go — a clean, copy-paste **Master Prompt** tailored for your CV bullet. It lets you pass a **category** (e.g., “chunking,” “retrieval metrics,” “cost/latency,” “architecture,” “library choices,” “LLM-as-Judge,” etc.), and it will generate sharp interviewer-style questions plus impressive, credible model answers.
+
+---
+
+# Master Prompt: Interview Q\&A Generator for RAG-based Regulatory Filing Navigator
+
+## Role
+
+You are a **senior AI engineer + interviewer coach**. Your job is to probe, validate, and strengthen the candidate’s CV bullet by generating **high-quality interviewer questions** and **model answers** that are specific, measurable, and technically credible.
+
+## Candidate CV Bullet (Context)
+
+“Engineered a RAG-based Regulatory Filing Navigator using LangChain document loaders to ingest healthcare guidelines, chunking and indexing content in Azure Cognitive Search via LlamaIndex; and leveraging Azure OpenAI to generate embeddings and synthesize answers, enabling region-specific compliance queries, reducing manual review effort by 75%, and saving \~£100k annually.”
+
+## Assumptions (Use unless contradicted)
+
+* **Corpus**: \~38,500 documents / \~285,000 pages; 78% PDF, 17% HTML, 5% DOCX; weekly deltas \~1,200 pages.
+* **Jurisdictions**: UK (MHRA/NICE), EU (EMA/ECDC), US (FDA/HHS OCR), Canada, Australia, GCC pilot (UAE DoH/DHA).
+* **Chunking**: 900 tokens, 140 overlap, heading/list aware; tables ≤600 tokens; metadata: jurisdiction, regulator, doc\_type, effective\_date\_start/end, version\_id, source\_url, page\_start/end, section\_path.
+* **Index/Retrieval**: Azure Cognitive Search hybrid (BM25 + vector), LlamaIndex pipeline; filters for jurisdiction/regulator/effective\_date; rerank to top-6.
+* **Embeddings**: Azure `text-embedding-3-large` (3072-d) for prod tier-1; OSS `mistral-embed` and `bge-m3` for A/B and backfills.
+* **Quality (gold set 2,400 Q-A)**: Recall\@10 ≈ 0.9+ across major jurisdictions; nDCG\@10 ≈ 0.83–0.86; faithfulness ≥ 0.92; manual review reduced \~72–77%; \~£100k annual savings.
+* **Generation**: `gpt-4o` primary, `gpt-4o-mini` for low-risk/grounded queries; p95 E2E ≈ 2.3 s.
+
+## Your Tasks
+
+1. **Take a category input** (see “Input” below) and produce:
+
+   * 8–12 **interviewer-grade questions** focused on that category.
+   * **Model answers** that a strong candidate would give (tight, defensible, with numbers/trade-offs).
+   * Brief **Explanation** blocks only when a concept could be unclear.
+2. Where relevant, add **alternatives + trade-offs** (why this vs. that).
+3. Keep answers crisp, use numbered bullets, and tie back to compliance/regulatory realities.
+
+## Output Format (strict)
+
+Produce the following sections:
+
+A. **Category**: `<echo the category>`
+B. **One-paragraph positioning** (what this category covers for this project)
+C. **Interviewer Questions & Model Answers**
+
+* Q1 …
+
+  * **Answer**: …
+  * *Explanation (if helpful)*: …
+* Q2 …
+
+  * **Answer**: …
+  * *Explanation*: …
+    (continue up to 8–12 Q/A pairs)
+
+D. **Alternatives & Trade-offs** (3–6 bullets)
+E. **Red Flags & Mitigations** (3–6 bullets)
+F. **Metrics or Proof Points to Quote** (jurisdiction-aware targets, recall/nDCG, latency, cost)
+G. **STAR Mini-Stories** (2–3 bullets with Situation-Task-Action-Result, each ≤4 lines)
+
+## Style & Quality Bar
+
+* **Specific > vague**; include concrete numbers, k values, thresholds, and filters.
+* **Grounding**: tie claims to citations/metadata/effective-date logic.
+* **No generic fluff**; keep each answer ≤6 lines.
+* **Compliance lens**: note jurisdiction, versioning, and abstain behavior where relevant.
+
+## Input
+
+* **category**: one of
+  `architecture`, `library choices`, `chunking`, `indexing`, `retrieval & reranking`, `query planning`, `evaluation & metrics`, `LLM-as-Judge`, `observability & governance`, `cost & latency`, `safety & redaction`, `updates & versioning`, `multi-jurisdiction logic`, `failure modes`, `business impact`.
+
+## Example Call
+
+* category: `retrieval & reranking`
+
+## Generate Now
+
+Produce sections A–G per the Output Format for the given **category**.
+
+---
+
+### How you’ll use it
+
+1. Paste this prompt into ChatGPT.
+2. Provide a **category** when asked.
+3. You’ll receive a tight pack of **interviewer questions + model answers** tuned to your CV bullet, with extra bullets to quote in interviews.
